@@ -1,0 +1,46 @@
+{
+  "name": "fininsight-monorepo",
+  "version": "1.0.0",
+  "description": "Financial insights monorepo with NestJS, Python, Go, and LangChain services",
+  "private": true,
+  "workspaces": [
+    "services/nestjs-api",
+    "apps/langchain-app"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:nestjs\" \"pnpm dev:python\" \"pnpm dev:golang\" \"pnpm dev:langchain\"",
+    "dev:nestjs": "cd services/nestjs-api && pnpm run start:dev",
+    "dev:python": "cd services/python-service && python -m uvicorn main:app --reload --port 8001",
+    "dev:golang": "cd services/golang-service && go run cmd/main.go",
+    "dev:langchain": "cd apps/langchain-app && pnpm run dev",
+    "build": "pnpm run build:nestjs && pnpm run build:langchain",
+    "build:nestjs": "cd services/nestjs-api && pnpm run build",
+    "build:langchain": "cd apps/langchain-app && pnpm run build",
+    "test": "pnpm run test:nestjs && pnpm run test:python && pnpm run test:golang",
+    "test:nestjs": "cd services/nestjs-api && pnpm run test",
+    "test:python": "cd services/python-service && python -m pytest",
+    "test:golang": "cd services/golang-service && go test ./...",
+    "lint": "pnpm run lint:nestjs && pnpm run lint:python && pnpm run lint:golang",
+    "lint:nestjs": "cd services/nestjs-api && pnpm run lint",
+    "lint:python": "cd services/python-service && black . && isort .",
+    "lint:golang": "cd services/golang-service && golangci-lint run",
+    "format": "prettier --write \"**/*.{js,ts,json,md}\"",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "clean": "pnpm run clean:nestjs && pnpm run clean:langchain",
+    "clean:nestjs": "cd services/nestjs-api && rm -rf dist node_modules",
+    "clean:langchain": "cd apps/langchain-app && rm -rf dist node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.0.0"
+} 
